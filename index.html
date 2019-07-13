@@ -13,6 +13,7 @@
     
     <script src="jquery-3.1.1.min.js"></script>
     <script src="fun.js"></script>
+    <script src="Chart.js"></script>
 
 </head>
 
@@ -27,34 +28,53 @@
         <div class="input _1">
             <span>
                 <p>指标:</p><br />
-                <form>
+                <form >
                     <select name="index_type" id="index_type">
-                        <option value="MACD">MACD</option>
-                        <option value="EMA">EMA</option>
-                        <option value="KDJ">KDJ</option>
-                        <option value="MA">MA</option>
+                        <option value="ROC_6#ROC_12&cross">ROC_6#ROC_12&cross</option>
+                        <option value="K#40#1&thre&HS">K#40#1&thre&HS</option>
+                        <option value="WR#80#1&thre">WR#80#1&thre</option>
+                        <option value="RSI_6#85#1&thre">RSI_6#85#1&thre</option>
+                        <option value="K#20#0&thre">K#20#0&thre</option>
+                        <option value="CCI#100#1&thre">CCI#100#1&thre</option>
+                        <option value="BIAS_5#BIAS_50&cross">BIAS_5#BIAS_50&cross</option>
+                        <option value="J#100#1&thre">J#100#1&thre</option>
+                        <option value="close_EMA_12#close_EMA_26&cross&HS">close_EMA_12#close_EMA_26&cross&HS</option>
+                        <option value="K#80#1&thre">K#80#1&thre</option>
+                        <option value="BIAS_5#10#1&thre">BIAS_5#10#1&thre</option>
+                        <option value="close_EMA_5#close_EMA_10&cross">close_EMA_5#close_EMA_10&cross</option>
+                        <option value="J#20#0&thre">J#20#0&thre</option>
+                        <option value="RSI_6#RSI_12&cross">RSI_6#RSI_12&cross</option>
+                        <option value="RSI_6#20#0&thre">RSI_6#20#0&thre</option>
+                        <option value="CCI#-100#0&thre">CCI#-100#0&thre</option>
+                        <option value="close_EMA_12#close_EMA_26&cross">close_EMA_12#close_EMA_26&cross</option>
+                        <option value="K#D&cross">K#D&cross</option>
+                        <option value="close_EMA_5#2#1&trend">close_EMA_5#2#1&trend</option>
+                        <option value="MACD#0#1&thre">MACD#0#1&thre</option>
+                        <option value="D#20#0&thre">D#20#0&thre</option>
+                        <option value="WR#20#0&thre">WR#20#0&thre</option>
+                        <option value="ROC_6#0#1&thre">ROC_6#0#1&thre</option>
+                        <option value="RSI_6#80#1&thre">RSI_6#80#1&thre</option>
+                        <option value="J#D&cross">J#D&cross</option>
+                        <option value="BIAS_5#-10#0&thre">BIAS_5#-10#0&thre</option>
+                        <option value="J#80#1&thre">J#80#1&thre</option>
+                        <option value="D#80#1&thre">D#80#1&thre</option>
                     </select>
                 </form>
             </span>
         </div>
         <div class="input _2">
             <span>
-                <p>长度:</p><br />
+                <p>起始日期:</p><br />
                 <form>
-                    <input id="days" type="number" value="5" min="1" style="width: 30%" />
+                    <input id="begin_day" type="date" value="2018-01-03" />
                 </form>
             </span>
         </div>
         <div class="input _3">
             <span>
-                <p>图线种类:</p><br />
+                <p>截止日期:</p><br />
                 <form>
-                    <select name="line_type" id="line_type">
-                        <option value="-">-</option>
-                        <option value="--">--</option>
-                        <option value="o">o</option>
-                        <option value="*">*</option>
-                    </select>
+                    <input id="over_day" type="date" value="2019-05-09"/>
                 </form>
             </span>
         </div>
@@ -64,11 +84,19 @@
             </span>
         </div>
     </div>
+    <div class="intro">
+        下图指标为：<p id="intro_index"><br/></p>
+        日期为：<p id="intro_date"></p>
+    </div>
+    
+    <div class="bar-chart" >
+        <h5 class="bar-title">时间-指标值图像</h5>
+        <canvas id="currentWeekChart" width="400" height="300"></canvas>
+    </div>
 
     <div class="picture">
-        <img src="https://www.buaa.edu.cn/__local/4/8C/05/4838BEF20C6477FE388E6DF73A0_C181570F_1F512.jpg" lt="北航地图"
-            width="60%" />
-        <p id="intro"></p><br />
+        <p>下面是所有的json文件内容</p>
+        <br />
         <pre id="json_show"></pre>
     </div>
 

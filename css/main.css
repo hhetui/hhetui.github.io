@@ -44,7 +44,7 @@ body {
 
 .input {
   position: relative;
-  width: calc(0.8 * var(--width));
+  width: calc(1 * var(--width));
   height: calc(0.7 * var(--height));
   display: flex;
   justify-content: center;
@@ -110,5 +110,15 @@ a:hover {
   color: #222;
 }
 .picture{
+  text-align: center;
+}
+.bar-chart{
+  text-align: center;
+  width: 80%;
+  background-color: #fff;
+  margin:2% 10%;
+  position: relative;
+}
+.intro{
   text-align: center;
 }

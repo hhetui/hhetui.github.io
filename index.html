@@ -3,111 +3,71 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="author" content="王先生">
-    <meta name="description" content="学校介绍">
+    <meta name="author" content="王兴坤">
+    <meta name="description" content="实验室数据">
     <meta name="keywords" content="北京航空航天大学">
     <meta http-equiv="refresh" content="10000">
-    <title>王先生的网址</title>
-    <link rel="stylesheet" type="text/css" href="css/main.css"/>
+    <title>结果展示网址</title>
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
     <base target="_blank" />
+    <script src="fun.js"></script>
 
-    <style type="text/css">
-
-    </style>
 </head>
 
 <body>
-    <hr />
-    <div id="container">
-        <div id="header" style="background-color: rgb(66, 150, 228);">
-            <h1 id="zd" style="text-align:center;margin-bottom: 0;">HTML测试</h1>
+    <svg width="0" height="0">
+        <filter id="filter">
+            <feTurbulence type="fractalNoise" baseFrequency=".01" numOctaves="6" />
+            <feDisplacementMap in="SourceGraphic" scale="100" />
+        </filter>
+    </svg>
+    <div class="input_all">
+        <div class="input _1">
+            <span>
+                <p>指标:</p><br />
+                <form>
+                    <select name="index_type" id="index_type">
+                        <option value="MACD">MACD</option>
+                        <option value="EMA">EMA</option>
+                        <option value="KDJ">KDJ</option>
+                        <option value="MA">MA</option>
+                    </select>
+                </form>
+            </span>
         </div>
-
-        <div id="menu" style="background-color: #FFD700;height:200px;;float:left;">
-            <b>目录</b><br>
-            <a href="#1z" target="_top" >第一章：关于北航</a><br />
-            <a href="#2z" target="_top" >第二章：学院介绍</a><br />
+        <div class="input _2">
+            <span>
+                <p>长度:</p><br />
+                <form>
+                    <input id="days" type="number" value="5" min="1" style="width: 30%" />
+                </form>
+            </span>
         </div>
-        <div id="content" style="text-align:center;background-color: rgb(226, 120, 94);
-        height:200px;">
-            <br /><br /><br /><br />
-            <b>109夜店 出售广告栏~</b><br /><br />
-            <div title="一天一天">
-                <b style="float: left">音乐：</b>
-                <audio src="music/HARU HARU.mp3" style="float: left" controls>
-                    <source src="HARU HARY.mp3" type="audio/mpeg">
-                </audio>
-            </div>
+        <div class="input _3">
+            <span>
+                <p>图线种类:</p><br />
+                <form>
+                    <select name="line_type" id="line_type">
+                        <option value="-">-</option>
+                        <option value="--">--</option>
+                        <option value="o">o</option>
+                        <option value="*">*</option>
+                    </select>
+                </form>
+            </span>
         </div>
-        <div id="footer" style="background-color:#FFD700;clear:both;text-align:center;">
-            版权 © 王二狗
-        
+        <div class="input _4">
+            <span>
+                <button id="run" type="button" class="run_button" onclick="show()">绘图</button>
+            </span>
         </div>
     </div>
 
-    <!--这是一个注释，下面是水平线-->
-
-    <hr />
-    <h2 id="1z">第一章</h2>
-    <div style="width: 100%;text-align: center;">
-        <a href="https://www.buaa.edu.cn/" target="_blank"><img
-        src="https://www.buaa.edu.cn/__local/F/58/6E/4938C12C0ACEEEC3C53AC3D50F9_34E17398_53E0A.jpg" 
-        alt="官网图片链接" width="100%"
-        
-        /></a>
+    <div class="picture">
+        <img src="https://www.buaa.edu.cn/__local/4/8C/05/4838BEF20C6477FE388E6DF73A0_C181570F_1F512.jpg" lt="北航地图"
+            width="80%" />
+        <p id="intro"></p><br />
     </div>
-    
-    <br/><br /><br /><br />
-    <b>学校地图</b><br /><br />
-    <div style="width: 100%;text-align: center;">
-        <a href="https://www.buaa.edu.cn/info/1726/2603.htm" target="_blank"><img
-        src="https://www.buaa.edu.cn/__local/4/8C/05/4838BEF20C6477FE388E6DF73A0_C181570F_1F512.jpg" 
-        lt="北航地图"width="100%"  /></a>
-    </div><br /><br /><hr />
-
-    <div style="height: 400px;widows: 100%;width:100%;"">
-        <iframe src=" https://www.baidu.com" width="100%" height="100%" frameborder="0"></iframe>
-    </div><br /><br />
-    <hr />
-    <h2 id="2z">第二章</h2>
-    <div>
-        <video src="video/one.mp4" height="200" controls>
-            <source  type="video/mp4">
-        </video>
-        <video src="video/two.mp4" width="200" controls>
-            <source  type="video/mp4">
-        </video>
-    </div><br />
 
 
-
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <hr />
-    <br />
-    <a href="http://www.baidu.com/"  target="_top">返回首页!</a>
-    <br />
-    <a href="#zd" target="_top" >回到最顶!</a>
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <hr />
 </body>
-</html>

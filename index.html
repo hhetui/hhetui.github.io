@@ -10,10 +10,10 @@
     <title>结果展示网址</title>
     <link rel="stylesheet" type="text/css" href="css/main.css" />
     <base target="_blank" />
-    
     <script src="jquery-3.1.1.min.js"></script>
     <script src="fun.js"></script>
     <script src="Chart.js"></script>
+
 
 </head>
 
@@ -117,11 +117,24 @@
         <h5 class="bar-title">时间-指标值图像</h5>
         <canvas id="currentWeekChart" width="400" height="300"></canvas>
     </div>
+<!-- 添加展示表格-->
+    <div class="table_show">
+        <span>
+            <button id="table_run" type="button" class="table_run" onclick="table_show()">添加</button>
+        </span>
+        <table width="80%"  border="1"  cellspacing="0">  
+               <thead>  
+                         
+                   </thead>  
+               <tbody id="tbMain"></tbody>  
+        </table>  
+    </div>
 
-    <div class="picture">
+    <div class="json_show">
         <p>下面是所有的json文件内容</p>
         <br />
         <pre id="json_show"></pre>
     </div>
 
 </body>
+

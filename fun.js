@@ -66,10 +66,99 @@ function show(){
     );
 
 }
-
-
+function table_show(){
+    var index_type = document.getElementById("index_type").value;
+    var begin_day = document.getElementById("begin_day").value;
+    var over_day = document.getElementById("over_day").value;
+    var tbody=document.getElementById("tbMain");
+    $.ajax({
+        type: "GET",
+        //文件位置
+        url: "code.json",
+        //返回数据格式为json,也可以是其他格式如
+        dataType: "json",
+        success: function (data_ori) {
+            var dataArrays1 = data_ori;
+            console.log(dataArrays1)
             
             
+            var temp_table = {};
+            var data_length = Object.keys(dataArrays1).length
+            for (i = 0; i < data_length; i++) {
+                var date_now = dataArrays1[i]["time"];
+                var date_1 = new Date(date_now.substr(0, 4) + "-"
+                    + date_now.substr(4, 2) + "-"
+                    + date_now.substr(6, 2));
+                var date_2 = new Date(begin_day);
+                var date_3 = new Date(over_day);
+                if (date_1 >= date_2 && date_1 <= date_3) {
+                    temp_table[date_now] = dataArrays1[i][index_type]
+                };
+            };
+            var data_key = new Array;
+            var data_value = new Array;
+            for (var key in temp_table) {
+                data_value.push(temp_table[key])
+            };
+            for (i = 0; i < Object.keys(temp_table).length; i++) {
+                data_key.push(Object.keys(temp_table)[i]);
+            };
+            var row = document.createElement('tr'); //创建行
+            for (i = 0; i < Object.keys(temp_table).length;i++){
+                row.appendChild(document.createElement('td').innerHTML = data_key[i]); //加入行  ，下面类似
+            }
+            var json_text = JSON.stringify(temp_table, null, "\t");
+            document.getElementById("json_show").innerHTML = json_text
+
+
+
+
+        },
+    },
+    );
+}
+
+var per = [
+    { id: 001, name: '张珊', job: '学生' },
+    { id: 002, name: '李斯', job: '教师' },
+    { id: 003, name: '王武', job: '经理' }
+];
+
+function test_show() {
+    var tbody = document.getElementById('tbMain');
+
+    for (var i = 0; i < per.length; i++) { //遍历一下json数据  
+        var trow = getDataRow(per[i]); //定义一个方法,返回tr数据  
+        tbody.appendChild(trow);
+    }
+
+}
+
+function getDataRow(h) {
+    var row = document.createElement('tr'); //创建行  
+
+    var idCell = document.createElement('td'); //创建第一列id  
+    idCell.innerHTML = h.id; //填充数据  
+    row.appendChild(idCell); //加入行  ，下面类似  
+
+    var nameCell = document.createElement('td');//创建第二列name  
+    nameCell.innerHTML = h.name;
+    row.appendChild(nameCell);
+
+    var jobCell = document.createElement('td');//创建第三列job  
+    jobCell.innerHTML = h.job;
+    row.appendChild(jobCell);
+
+    //到这里，json中的数据已经添加到表格中，下面为每行末尾添加删除按钮  
+
+    var delCell = document.createElement('td');//创建第四列，操作列  
+    row.appendChild(delCell);
+    var btnDel = document.createElement('input'); //创建一个input控件  
+    btnDel.setAttribute('type', 'button'); //type="button"  
+    btnDel.setAttribute('value', '删除');
+    return row; //返回tr数据      
+}
+           
 
 
 

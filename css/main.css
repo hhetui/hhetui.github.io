@@ -115,7 +115,7 @@ a {
 a:hover {
   color: #222;
 }
-.picture{
+.json_show{
   text-align: center;
 }
 .bar-chart{
@@ -127,4 +127,10 @@ a:hover {
 }
 .intro{
   text-align: center;
+}
+.table_show{
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  margin: 0 auto
 }

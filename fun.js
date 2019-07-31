@@ -1,6 +1,122 @@
 function $$(element) {
     return document.getElementById(element);
 }
+function clearCanvas() {
+    var c = document.getElementById("currentWeekChart");
+    c.height = c.height; 
+}  
+var fileName = "000001.XSHE.json";
+window.onload = function () {
+    var index_type = $$("index_type").value;
+    var objSelectet_index_type = $$("index_type");
+    var objSelectet_table_index_type = $$("table_index_type");
+    $.ajax({
+        type: "GET",
+        //文件位置
+        url: fileName,
+        //返回数据格式为json,也可以是其他格式如
+        dataType: "json",
+        success: function (data_ori) {
+            var dataArrays1 = data_ori;
+            var data_length = Object.keys(dataArrays1).length
+            //设置指标种类复选框选项
+            data_key = new Array;
+            for (i = 0; i < Object.keys(dataArrays1[0]).length; i++) {
+                data_key.push(Object.keys(dataArrays1[0])[i]);
+            };
+            for (i = 1; i < data_key.length - 1; i++) {
+                var objOption = document.createElement("OPTION");
+                objOption.text = data_key[i];
+                objOption.value = data_key[i];
+                objSelectet_index_type.options.add(objOption);
+            };
+            for (i = 1; i < data_key.length - 1; i++) {
+                var objOption = document.createElement("OPTION");
+                objOption.text = data_key[i];
+                objOption.value = data_key[i];
+                objSelectet_table_index_type.options.add(objOption);
+            };
+            //设置起始日期
+            var begin_day = $$("begin_day");
+            var over_day = $$("over_day");
+            var date_now = dataArrays1[0]["time"];
+            var date_1 = (date_now.substr(0, 4) + "-"
+                + date_now.substr(4, 2) + "-"
+                + date_now.substr(6, 2));
+            begin_day.value = date_1;
+            var date_now = dataArrays1[data_length-1]["time"];
+            var date_2 = (date_now.substr(0, 4) + "-"
+                + date_now.substr(4, 2) + "-"
+                + date_now.substr(6, 2));
+            over_day.value = date_2;
+
+
+            //画价格曲线
+            initialize();
+
+        },
+
+    });
+}
+
+function initialize(){
+    clearCanvas();
+    $.ajax({
+        type: "GET",
+        //文件位置
+        url: fileName,
+        //返回数据格式为json,也可以是其他格式如
+        dataType: "json",
+        success: function (data_ori) {
+            var dataArrays1 = data_ori;
+            var data_length = Object.keys(dataArrays1).length
+            //日期变化初始化价格曲线
+            var temp_picture = {};
+            var begin_day = $$("begin_day").value;
+            var over_day = $$("over_day").value;
+            for (i = 0; i < data_length; i++) {
+                var date_now = dataArrays1[i]["time"];
+                var date_1 = new Date(date_now.substr(0, 4) + "-"
+                    + date_now.substr(4, 2) + "-"
+                    + date_now.substr(6, 2));
+                var date_2 = new Date(begin_day);
+                var date_3 = new Date(over_day);
+                if (date_1 >= date_2 && date_1 <= date_3) {
+                    temp_picture[date_now] = dataArrays1[i]["close"];
+                };
+            };
+            data_key = new Array;
+            data_value = new Array;
+            for (var key in temp_picture) {
+                data_value.push(temp_picture[key])
+            };
+            for (i = 0; i < Object.keys(temp_picture).length; i++) {
+                data_key.push(Object.keys(temp_picture)[i]);
+            };
+            var data = {
+                labels: data_key,
+                datasets: [
+                    {
+                        label: "收盘价",
+                        backgroundColor: "rgba(0, 0, 0, 0.1)",//线条填充色
+                        pointBackgroundColor: "rgba(255,48,48,0.2)",//定点填充色
+                        data: data_value
+                    }
+                ]
+            };
+            var options = {};
+            var ctx = $$("currentWeekChart").getContext("2d");
+            var currentWeekChart = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: options
+            });
+
+        },
+
+    });
+}
+
 
 function show() {
     var index_type = $$("index_type").value;
@@ -13,7 +129,7 @@ function show() {
     $.ajax({
         type: "GET",
         //文件位置
-        url: "code.json",
+        url: fileName,
         //返回数据格式为json,也可以是其他格式如
         dataType: "json",
         success: function (data_ori) {
@@ -30,7 +146,7 @@ function show() {
                 var date_2 = new Date(begin_day);
                 var date_3 = new Date(over_day);
                 if (date_1 >= date_2 && date_1 <= date_3) {
-                    temp_picture[date_now] = dataArrays1[i][index_type]
+                    temp_picture[date_now] = dataArrays1[i][index_type];
                 };
             };
             data_key = new Array;
@@ -66,8 +182,7 @@ function show() {
 
         },
 
-    },
-    );
+    });
 
 }
 
@@ -79,7 +194,7 @@ function table_show() {
     $.ajax({
         type: "GET",
         //文件位置
-        url: "code.json",
+        url: fileName,
         //返回数据格式为json,也可以是其他格式如
         dataType: "json",
         success: function (data_ori) {
@@ -109,15 +224,15 @@ function table_show() {
                 data_key.push(Object.keys(temp_table)[i]);
             };
             //如果改变了日期则全部删掉
-            if (tbody.rows.length > 0){
+            if (tbody.rows.length > 0) {
                 if ((tbody.rows[0].childNodes[2].innerText != data_key[0]) ||
                     (tbody.rows[0].childNodes[tbody.rows.item(0).cells.length - 1].innerText
-                    != data_key[Object.keys(temp_table).length-1])){
-                    while (tbody.rows.length>0){
+                        != data_key[Object.keys(temp_table).length - 1])) {
+                    while (tbody.rows.length > 0) {
                         tbody.removeChild(tbody.lastChild);
                     }
                 };
-                
+
             };
             //alert(data_key[Object.keys(temp_table).length - 1])
             /*if (tbody.rows.length > 0) {

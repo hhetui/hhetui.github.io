@@ -1,20 +1,23 @@
+var fileName = "000001.XSHE.json";
 function $$(element) {
     return document.getElementById(element);
 }
 function clearCanvas() {
-    var c = document.getElementById("currentWeekChart");
-    c.height = c.height; 
+    $$("currentWeekChart").remove();
+    var canvasList = $$('bar_chart');
+    var canvas = document.createElement('canvas');
+    canvasList.appendChild(canvas);
+    canvas.id = "currentWeekChart";
+    canvas.width = 400;
+    canvas.height = 200;
 }  
-var fileName = "000001.XSHE.json";
+
 window.onload = function () {
-    var index_type = $$("index_type").value;
     var objSelectet_index_type = $$("index_type");
     var objSelectet_table_index_type = $$("table_index_type");
     $.ajax({
         type: "GET",
-        //文件位置
         url: fileName,
-        //返回数据格式为json,也可以是其他格式如
         dataType: "json",
         success: function (data_ori) {
             var dataArrays1 = data_ori;
@@ -36,7 +39,7 @@ window.onload = function () {
                 objOption.value = data_key[i];
                 objSelectet_table_index_type.options.add(objOption);
             };
-            //设置起始日期
+            //设置起始日期控件
             var begin_day = $$("begin_day");
             var over_day = $$("over_day");
             var date_now = dataArrays1[0]["time"];
@@ -50,27 +53,22 @@ window.onload = function () {
                 + date_now.substr(6, 2));
             over_day.value = date_2;
 
-
-            //画价格曲线
+            //初始化价格曲线
             initialize();
-
         },
 
     });
 }
-
+//日期变化则初始化价格曲线
 function initialize(){
     clearCanvas();
     $.ajax({
         type: "GET",
-        //文件位置
         url: fileName,
-        //返回数据格式为json,也可以是其他格式如
         dataType: "json",
         success: function (data_ori) {
             var dataArrays1 = data_ori;
             var data_length = Object.keys(dataArrays1).length
-            //日期变化初始化价格曲线
             var temp_picture = {};
             var begin_day = $$("begin_day").value;
             var over_day = $$("over_day").value;
@@ -111,13 +109,11 @@ function initialize(){
                 data: data,
                 options: options
             });
-
+            
         },
 
     });
 }
-
-
 function show() {
     var index_type = $$("index_type").value;
     var begin_day = $$("begin_day").value;
@@ -128,9 +124,7 @@ function show() {
     intro_date.innerHTML = begin_day + "~" + over_day;
     $.ajax({
         type: "GET",
-        //文件位置
         url: fileName,
-        //返回数据格式为json,也可以是其他格式如
         dataType: "json",
         success: function (data_ori) {
             var dataArrays1 = data_ori;
@@ -164,7 +158,7 @@ function show() {
                         label: "指标值",
                         backgroundColor: "rgba(0, 0, 0, 0.1)",//线条填充色
                         pointBackgroundColor: "rgba(255,48,48,0.2)",//定点填充色
-                        data: data_value
+                        data: data_value,
                     }
                 ]
             };
@@ -173,7 +167,7 @@ function show() {
             var currentWeekChart = new Chart(ctx, {
                 type: 'line',
                 data: data,
-                options: options
+                options: options,
             });
 
             $$("json_show").innerHTML =

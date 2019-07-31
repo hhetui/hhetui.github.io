@@ -21,6 +21,7 @@ window.onload = function () {
         dataType: "json",
         success: function (data_ori) {
             var dataArrays1 = data_ori;
+            var json_text = JSON.stringify(dataArrays1, null, "\t");
             var data_length = Object.keys(dataArrays1).length
             //设置指标种类复选框选项
             data_key = new Array;
@@ -55,11 +56,25 @@ window.onload = function () {
 
             //初始化价格曲线
             initialize();
+            $$("json_show").innerHTML =
+                json_text;
         },
 
     });
 }
 //日期变化则初始化价格曲线
+var data={};
+var options = {
+    responsive: true,
+    animation: {
+        duration: 0
+    },
+    hover: {
+        animationDuration: 0
+    },
+    responsiveAnimationDuration: 0,
+
+};
 function initialize(){
     clearCanvas();
     $.ajax({
@@ -91,18 +106,20 @@ function initialize(){
             for (i = 0; i < Object.keys(temp_picture).length; i++) {
                 data_key.push(Object.keys(temp_picture)[i]);
             };
-            var data = {
+            data = {
                 labels: data_key,
                 datasets: [
                     {
                         label: "收盘价",
                         backgroundColor: "rgba(0, 0, 0, 0.1)",//线条填充色
-                        pointBackgroundColor: "rgba(255,48,48,0.2)",//定点填充色
-                        data: data_value
+                        pointBackgroundColor: getRandomColor(),//定点填充色
+                        data: data_value,
+                        pointRadius: 2,
+                        
                     }
                 ]
             };
-            var options = {};
+            
             var ctx = $$("currentWeekChart").getContext("2d");
             var currentWeekChart = new Chart(ctx, {
                 type: 'line',
@@ -118,10 +135,7 @@ function show() {
     var index_type = $$("index_type").value;
     var begin_day = $$("begin_day").value;
     var over_day = $$("over_day").value;
-    var intro_index = $$("intro_index");
-    var intro_date = $$("intro_date");
-    intro_index.innerHTML = index_type;
-    intro_date.innerHTML = begin_day + "~" + over_day;
+    
     $.ajax({
         type: "GET",
         url: fileName,
@@ -129,7 +143,6 @@ function show() {
         success: function (data_ori) {
             var dataArrays1 = data_ori;
             console.log(dataArrays1)
-            var json_text = JSON.stringify(dataArrays1, null, "\t");
             var temp_picture = {};
             var data_length = Object.keys(dataArrays1).length
             for (i = 0; i < data_length; i++) {
@@ -151,33 +164,21 @@ function show() {
             for (i = 0; i < Object.keys(temp_picture).length; i++) {
                 data_key.push(Object.keys(temp_picture)[i]);
             };
-            var data = {
-                labels: data_key,
-                datasets: [
-                    {
-                        label: "指标值",
-                        backgroundColor: "rgba(0, 0, 0, 0.1)",//线条填充色
-                        pointBackgroundColor: "rgba(255,48,48,0.2)",//定点填充色
-                        data: data_value,
-                    }
-                ]
-            };
-            var options = {};
+            
+            data.datasets.push({
+                label: index_type,
+                backgroundColor: "rgba(0, 0, 0, 0.1)",//线条填充色
+                pointBackgroundColor: getRandomColor(),//定点填充色
+                data: data_value,
+            })
             var ctx = $$("currentWeekChart").getContext("2d");
             var currentWeekChart = new Chart(ctx, {
                 type: 'line',
                 data: data,
                 options: options,
             });
-
-            $$("json_show").innerHTML =
-                json_text;
-
-
         },
-
     });
-
 }
 
 function table_show() {
@@ -287,3 +288,10 @@ function delete_fun() {
             event.srcElement.parentNode.parentNode);
     };
 };
+var getRandomColor = function () {
+    return '#' +
+        (function (color) {
+            return (color += '0123456789abcdef'[Math.floor(Math.random() * 16)])
+                && (color.length == 6) ? color : arguments.callee(color);
+        })('');
+}

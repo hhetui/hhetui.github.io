@@ -73,8 +73,20 @@ var options = {
         animationDuration: 0
     },
     responsiveAnimationDuration: 0,
+    legend:{
+        display:true,
+        labels:{
+            usePointStyle: true,
+
+        },
+    }
 
 };
+function makeOptions(someColor){
+    options_now=options;
+    options_now["legend"]["labels"]["fontColor"]=someColor;
+    return options_now;
+}
 function initialize(){
     clearCanvas();
     $.ajax({
@@ -106,30 +118,33 @@ function initialize(){
             for (i = 0; i < Object.keys(temp_picture).length; i++) {
                 data_key.push(Object.keys(temp_picture)[i]);
             };
+            var nowColor = getRandomColor();
             data = {
                 labels: data_key,
                 datasets: [
                     {
                         label: "收盘价",
-                        backgroundColor: "rgba(0, 0, 0, 0.1)",//线条填充色
-                        pointBackgroundColor: getRandomColor(),//定点填充色
+                        backgroundColor: "rgba(0, 0, 0, 0.05)",//线条填充色
+                        pointBackgroundColor: "rgba(0, 0, 0, 0.15)",//定点填充色
                         data: data_value,
-                        pointRadius: 2,
+                        pointRadius: 1,
                         
-                    }
-                ]
+                    },
+                    
+                ],
             };
             
             var ctx = $$("currentWeekChart").getContext("2d");
             var currentWeekChart = new Chart(ctx, {
-                type: 'line',
+                type:"line",
                 data: data,
-                options: options
+                options: options,
             });
             
         },
 
     });
+    
 }
 function show() {
     var index_type = $$("index_type").value;
@@ -164,12 +179,13 @@ function show() {
             for (i = 0; i < Object.keys(temp_picture).length; i++) {
                 data_key.push(Object.keys(temp_picture)[i]);
             };
-            
+            var nowColor = getRandomColor();
             data.datasets.push({
                 label: index_type,
-                backgroundColor: "rgba(0, 0, 0, 0.1)",//线条填充色
-                pointBackgroundColor: getRandomColor(),//定点填充色
+                backgroundColor:nowColor,//线条填充色
+                pointBackgroundColor: nowColor,//定点填充色
                 data: data_value,
+                pointRadius: 2,
             })
             var ctx = $$("currentWeekChart").getContext("2d");
             var currentWeekChart = new Chart(ctx, {

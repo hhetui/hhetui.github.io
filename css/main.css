@@ -63,13 +63,7 @@ body {
 .input._1 {
   background: #2980b9;
 }
-.input._2 {
-  background: #8e44ad;
-}
-.input._3 {
-  background: #16a085;
 
-}
 .input._4 {
   background: #7bcc1f;
 }
@@ -87,7 +81,7 @@ body {
   margin: 0 auto
 }
 .input._8 {
-  background: #dfe229;
+  background: #16a085;
 }
 .input._9 {
   background: #0b8ab1;
@@ -136,11 +130,14 @@ a:hover {
   text-align: center;
 }
 .bar_chart{
-  text-align: center;
-  width: 80%;
   background-color: #fff;
-  margin:2% 10%;
   position: relative;
+  width: 800px;
+  height: 600px;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  margin: 0 auto
 }
 
 .table_show{

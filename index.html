@@ -13,6 +13,7 @@
     <script src="jquery-3.1.1.min.js"></script>
     <script src="fun.js"></script>
     <script src="Chart.js"></script>
+    <script src="echarts.min.js"></script>
 
 
 </head>
@@ -60,22 +61,9 @@
                 </form>
             </span>
         </div>
-        <div class="input _2">
-            <span>
-                <p>起始日期:</p><br />
-                <form>
-                    <input id="begin_day" type="date" onchange="initialize()"  />
-                </form>
-            </span>
-        </div>
-        <div class="input _3">
-            <span>
-                <p>截止日期:</p><br />
-                <form>
-                    <input id="over_day" type="date" onchange="initialize()"/>
-                </form>
-            </span>
-        </div>
+        
+
+        
         <div class="input _4">
             <span>
                 <button id="run" type="button" class="run_button" onclick="show()">绘图</button>
@@ -84,9 +72,9 @@
     </div>
    
     
-    <div id ="bar_chart" class="bar_chart" >
-        <h5 class="bar_title">时间-指标值图像</h5>
-        <canvas id="currentWeekChart" width="400" height="200"></canvas>
+    <div id ="bar_chart" class="bar_chart"  >
+        
+        <!--<canvas id="currentWeekChart" width="400" height="200"></canvas>-->
     </div>
 <!-- 添加展示表格-->
     <div class="input_all">

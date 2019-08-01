@@ -2,15 +2,6 @@ var fileName = "000001.XSHE.json";
 function $$(element) {
     return document.getElementById(element);
 }
-function clearCanvas() {
-    $$("currentWeekChart").remove();
-    var canvasList = $$('bar_chart');
-    var canvas = document.createElement('canvas');
-    canvasList.appendChild(canvas);
-    canvas.id = "currentWeekChart";
-    canvas.width = 400;
-    canvas.height = 200;
-}  
 
 window.onload = function () {
     var objSelectet_index_type = $$("index_type");
@@ -41,18 +32,14 @@ window.onload = function () {
                 objSelectet_table_index_type.options.add(objOption);
             };
             //设置起始日期控件
-            var begin_day = $$("begin_day");
-            var over_day = $$("over_day");
             var date_now = dataArrays1[0]["time"];
-            var date_1 = (date_now.substr(0, 4) + "-"
+            date_begin = (date_now.substr(0, 4) + "-"
                 + date_now.substr(4, 2) + "-"
                 + date_now.substr(6, 2));
-            begin_day.value = date_1;
             var date_now = dataArrays1[data_length-1]["time"];
-            var date_2 = (date_now.substr(0, 4) + "-"
+            date_over = (date_now.substr(0, 4) + "-"
                 + date_now.substr(4, 2) + "-"
                 + date_now.substr(6, 2));
-            over_day.value = date_2;
 
             //初始化价格曲线
             initialize();
@@ -62,33 +49,10 @@ window.onload = function () {
 
     });
 }
+
 //日期变化则初始化价格曲线
-var data={};
-var options = {
-    responsive: true,
-    animation: {
-        duration: 0
-    },
-    hover: {
-        animationDuration: 0
-    },
-    responsiveAnimationDuration: 0,
-    legend:{
-        display:true,
-        labels:{
-            usePointStyle: true,
-
-        },
-    }
-
-};
-function makeOptions(someColor){
-    options_now=options;
-    options_now["legend"]["labels"]["fontColor"]=someColor;
-    return options_now;
-}
 function initialize(){
-    clearCanvas();
+    //clearCanvas();
     $.ajax({
         type: "GET",
         url: fileName,
@@ -96,61 +60,118 @@ function initialize(){
         success: function (data_ori) {
             var dataArrays1 = data_ori;
             var data_length = Object.keys(dataArrays1).length
+            //获取起始日期
             var temp_picture = {};
-            var begin_day = $$("begin_day").value;
-            var over_day = $$("over_day").value;
             for (i = 0; i < data_length; i++) {
                 var date_now = dataArrays1[i]["time"];
-                var date_1 = new Date(date_now.substr(0, 4) + "-"
-                    + date_now.substr(4, 2) + "-"
-                    + date_now.substr(6, 2));
-                var date_2 = new Date(begin_day);
-                var date_3 = new Date(over_day);
-                if (date_1 >= date_2 && date_1 <= date_3) {
+                if (1) {
                     temp_picture[date_now] = dataArrays1[i]["close"];
                 };
             };
-            data_key = new Array;
-            data_value = new Array;
+            //坐标轴（日期）和指标值
+            var data_key = new Array;
+            var data_value = new Array;
+
             for (var key in temp_picture) {
                 data_value.push(temp_picture[key])
             };
             for (i = 0; i < Object.keys(temp_picture).length; i++) {
                 data_key.push(Object.keys(temp_picture)[i]);
             };
-            var nowColor = getRandomColor();
-            data = {
-                labels: data_key,
-                datasets: [
-                    {
-                        label: "收盘价",
-                        backgroundColor: "rgba(0, 0, 0, 0.05)",//线条填充色
-                        pointBackgroundColor: "rgba(0, 0, 0, 0.15)",//定点填充色
-                        data: data_value,
-                        pointRadius: 1,
-                        
-                    },
-                    
-                ],
-            };
-            
-            var ctx = $$("currentWeekChart").getContext("2d");
-            var currentWeekChart = new Chart(ctx, {
-                type:"line",
-                data: data,
-                options: options,
-            });
-            
+            //绘价格曲线
+            plotPrice(data_key,data_value);
         },
-
     });
+}
+//价格绘制函数
+function plotPrice(date, price) {
+    var data=price;
+    
+    var myChart = echarts.init($$('bar_chart'));
+    option = {
+        legend:{
+            y:'20',
+            x:'left',
+            data: ['收盘价']
+        },
+        tooltip: {
+            trigger: 'axis',
+            position: function (pt) {
+                return [pt[0], '10%'];
+            }
+        },
+        title: {
+            left: 'center',
+            text: '价格-指标图',
+        },
+        toolbox: {
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: date
+        },
+        yAxis: {
+            type: 'value',
+            boundaryGap: [0, '100%']
+        },
+        dataZoom: [{
+            type: 'inside',
+            start: 0,
+            end: 100,
+        }, {
+            start: 0,
+            end: 10,
+            handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+            handleSize: '80%',
+            handleStyle: {
+                color: '#fff',
+                shadowBlur: 3,
+                shadowColor: 'rgba(0, 0, 0, 0.6)',
+                shadowOffsetX: 2,
+                shadowOffsetY: 2
+            }
+        }],
+        series: [
+            {
+                name: '收盘价',
+                type: 'line',
+                smooth: false,
+                symbol: 'none',
+                sampling: 'average',
+                itemStyle: {
+                    color: '#c0c0c0'
+                },
+                areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: 'rgb(255,255,255)'
+                    }, {
+                        offset: 1,
+                        color: 'rgb(255,255,255)'
+                    }])
+                },
+                data: data
+            }
+        ]
+    };
+    myChart.setOption(option);
     
 }
+function plotPrice_2() {
+    var myChart = echarts.init($$('bar_chart'));
+    myChart.setOption(option);
+}
+
 function show() {
     var index_type = $$("index_type").value;
-    var begin_day = $$("begin_day").value;
-    var over_day = $$("over_day").value;
-    
     $.ajax({
         type: "GET",
         url: fileName,
@@ -160,43 +181,60 @@ function show() {
             console.log(dataArrays1)
             var temp_picture = {};
             var data_length = Object.keys(dataArrays1).length
-            for (i = 0; i < data_length; i++) {
-                var date_now = dataArrays1[i]["time"];
-                var date_1 = new Date(date_now.substr(0, 4) + "-"
-                    + date_now.substr(4, 2) + "-"
-                    + date_now.substr(6, 2));
-                var date_2 = new Date(begin_day);
-                var date_3 = new Date(over_day);
-                if (date_1 >= date_2 && date_1 <= date_3) {
-                    temp_picture[date_now] = dataArrays1[i][index_type];
+            
+            intMax=0;
+            for (i = 0; i < data_length; i++){
+                if (dataArrays1[i][index_type]>intMax){
+                    intMax = dataArrays1[i][index_type];
                 };
             };
-            data_key = new Array;
-            data_value = new Array;
-            for (var key in temp_picture) {
-                data_value.push(temp_picture[key])
-            };
-            for (i = 0; i < Object.keys(temp_picture).length; i++) {
-                data_key.push(Object.keys(temp_picture)[i]);
-            };
-            var nowColor = getRandomColor();
-            data.datasets.push({
-                label: index_type,
-                backgroundColor:nowColor,//线条填充色
-                pointBackgroundColor: nowColor,//定点填充色
-                data: data_value,
-                pointRadius: 2,
-            })
-            var ctx = $$("currentWeekChart").getContext("2d");
-            var currentWeekChart = new Chart(ctx, {
-                type: 'line',
-                data: data,
-                options: options,
-            });
+
+            for(indexNumber=1;indexNumber<=intMax;indexNumber++){
+                for (i = 0; i < data_length; i++) {
+                    var date_now = dataArrays1[i]["time"];
+                    if (dataArrays1[i][index_type] == indexNumber) {
+                        temp_picture[date_now] = dataArrays1[i]["close"];
+                    };
+                };
+
+                data_key = new Array;
+                data_value = new Array;
+                for (var key in temp_picture) {
+                    data_value.push(temp_picture[key])
+                };
+                for (i = 0; i < Object.keys(temp_picture).length; i++) {
+                    data_key.push(Object.keys(temp_picture)[i]);
+                };
+                var index_type_now = index_type;
+                if(intMax>1){
+                    index_type_now = index_type+"_"+indexNumber;
+                };
+                
+                plotIndex(data_key, data_value, index_type_now);
+            }
+
         },
     });
 }
 
+
+function plotIndex(date,data,index){
+    var newList = [];
+    for (i = 0; i < data.length; i++) {
+        newList.push([date[i], data[i]]);
+    }
+    option.legend.data.push(index);
+    option.series.push({
+        name: index,
+        type: 'scatter',
+        data: newList,
+        symbolSize: 4,
+        itemStyle: {
+            color: getRandomColor(),
+        },
+    });
+    plotPrice_2();
+}
 function table_show() {
     var index_type = $$("table_index_type").value;
     var begin_day = $$("table_begin_day").value;

@@ -2,7 +2,9 @@ var fileName = "000001.XSHE.json";
 function $$(element) {
     return document.getElementById(element);
 }
-
+window.onresize=function(){
+    echarts.init($$('bar_chart')).resize();
+}
 window.onload = function () {
     var objSelectet_index_type = $$("index_type");
     var objSelectet_table_index_type = $$("table_index_type");
@@ -31,7 +33,7 @@ window.onload = function () {
                 objOption.value = data_key[i];
                 objSelectet_table_index_type.options.add(objOption);
             };
-            //设置起始日期控件
+            //设置起始日期
             var date_now = dataArrays1[0]["time"];
             date_begin = (date_now.substr(0, 4) + "-"
                 + date_now.substr(4, 2) + "-"
@@ -40,11 +42,10 @@ window.onload = function () {
             date_over = (date_now.substr(0, 4) + "-"
                 + date_now.substr(4, 2) + "-"
                 + date_now.substr(6, 2));
-
+            $$("table_begin_day").value = date_begin;
+            $$("table_over_day").value = date_over;
             //初始化价格曲线
             initialize();
-            $$("json_show").innerHTML =
-                json_text;
         },
 
     });
@@ -216,8 +217,6 @@ function show() {
         },
     });
 }
-
-
 function plotIndex(date,data,index){
     var newList = [];
     for (i = 0; i < data.length; i++) {
@@ -228,29 +227,60 @@ function plotIndex(date,data,index){
         name: index,
         type: 'scatter',
         data: newList,
-        symbolSize: 4,
+        symbolSize: 10,
         itemStyle: {
             color: getRandomColor(),
         },
     });
     plotPrice_2();
 }
-function table_show() {
+
+
+var getRandomColor = function () {
+    return '#' +
+        (function (color) {
+            return (color += '0123456789abcdef'[Math.floor(Math.random() * 16)])
+                && (color.length == 6) ? color : arguments.callee(color);
+        })('');
+}
+
+var dataObject = [
+
+];
+var hotSettings = {
+    data: dataObject,
+    columns: [
+
+    ],
+    stretchH: 'all',
+    width: '80%',
+    autoWrapRow: true,
+    height: 487,
+    maxRows: 22,
+    manualRowResize: true,
+    manualColumnResize: true,
+    rowHeaders: true,
+    colHeaders: [
+
+    ],
+    manualRowMove: true,
+    manualColumnMove: true,
+    contextMenu: true,
+    dropdownMenu: true,
+    filters: true
+};
+function addTable(){
     var index_type = $$("table_index_type").value;
     var begin_day = $$("table_begin_day").value;
     var over_day = $$("table_over_day").value;
-    var tbody = $$("tbMain");
     $.ajax({
         type: "GET",
-        //文件位置
         url: fileName,
-        //返回数据格式为json,也可以是其他格式如
         dataType: "json",
         success: function (data_ori) {
             var dataArrays1 = data_ori;
-            console.log(dataArrays1);
-
             var temp_table = {};
+            temp_table["1"] = index_type;
             var data_length = Object.keys(dataArrays1).length;
             for (i = 0; i < data_length; i++) {
                 var date_now = dataArrays1[i]["time"];
@@ -263,89 +293,47 @@ function table_show() {
                     temp_table[date_now] = dataArrays1[i][index_type]
                 };
             };
-
             var data_key = new Array;
             var data_value = new Array;
+            var number=0;
             for (var key in temp_table) {
-                data_value.push(temp_table[key])
+                data_value.push(temp_table[key]);
+                
             };
             for (i = 0; i < Object.keys(temp_table).length; i++) {
                 data_key.push(Object.keys(temp_table)[i]);
             };
-            //如果改变了日期则全部删掉
-            if (tbody.rows.length > 0) {
-                if ((tbody.rows[0].childNodes[2].innerText != data_key[0]) ||
-                    (tbody.rows[0].childNodes[tbody.rows.item(0).cells.length - 1].innerText
-                        != data_key[Object.keys(temp_table).length - 1])) {
-                    while (tbody.rows.length > 0) {
-                        tbody.removeChild(tbody.lastChild);
-                    }
-                };
-
+            
+            dataObject.push(temp_table);
+            //alert(Object.keys(dataObject).length);
+            var hotElement = document.querySelector('#hot');
+            var hotElementContainer = hotElement.parentNode;
+            var columnsNew = [];
+            var colHeadersNew = [];
+            colHeadersNew.push("种类")
+            for (i = 0; i < data_key.length; i++) {
+                columnsNew.push({
+                    data: ""+data_key[i],
+                    type: "text",
+                });
+                if(i>0){
+                    colHeadersNew.push(data_key[i]);
+                }
+                
             };
-            //alert(data_key[Object.keys(temp_table).length - 1])
-            /*if (tbody.rows.length > 0) {
-                alert(data_key[0])
-            }*/
-            //如果没有日期则创建
-            if (tbody.rows.length == 0) {
-                var row = document.createElement('tr');
-
-                var idCell = document.createElement('td');
-                idCell.innerHTML = "";
-                row.appendChild(idCell);
-                var idCell = document.createElement('td');
-                idCell.innerHTML = "日期";
-                row.appendChild(idCell);
-                for (i = 0; i < Object.keys(temp_table).length; i++) {
-                    var idCell = document.createElement('td');
-                    idCell.innerHTML = data_key[i];
-                    row.appendChild(idCell);
-                };
-                tbody.appendChild(row);
-            };
-            //添加指标数据
-            var row = document.createElement('tr');
-
-            var idCell = document.createElement('td');
-            row.appendChild(idCell);
-            var btnDel = document.createElement('input'); //创建一个input控件  
-            btnDel.setAttribute('type', 'button'); //type="button"  
-            btnDel.setAttribute('value', '删除');
-            btnDel.setAttribute('onclick', 'delete_fun()');
-            //删除操作
-            //btnDel.οnclick = 
-            idCell.appendChild(btnDel);  //把删除按钮加入td，别忘了
-
-
-            var idCell = document.createElement('td');
-            idCell.innerHTML = index_type; //指标名
-            row.appendChild(idCell);
-            for (i = 0; i < Object.keys(temp_table).length; i++) {
-                var idCell = document.createElement('td');
-                idCell.innerHTML = data_value[i];
-                row.appendChild(idCell);
-            };
-            tbody.appendChild(row);
-
-
-
-
+            columnsNew.push({
+                data: "1",
+                type: "text",
+            });
+            hotSettings.columns = columnsNew;
+            hotSettings.colHeaders = colHeadersNew;
+            var hot = new Handsontable(hotElement, hotSettings);
         },
     },
     );
-};
-function delete_fun() {
-    if (confirm("确定删除这一行嘛？")) {
-        //找到按钮所在行的节点，然后删掉这一行
-        event.srcElement.parentNode.parentNode.parentNode.removeChild(
-            event.srcElement.parentNode.parentNode);
-    };
-};
-var getRandomColor = function () {
-    return '#' +
-        (function (color) {
-            return (color += '0123456789abcdef'[Math.floor(Math.random() * 16)])
-                && (color.length == 6) ? color : arguments.callee(color);
-        })('');
+
+}
+
+function clearfun(){
+
 }

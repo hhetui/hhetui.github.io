@@ -14,18 +14,14 @@
     <script src="fun.js"></script>
     <script src="Chart.js"></script>
     <script src="echarts.min.js"></script>
+    <script src="handsontable.full.min.js"></script>
+    <link href="handsontable.full.min.css" rel="stylesheet" media="screen">
 
 
 </head>
 
 <body>
     
-    <svg width="0" height="0">
-        <filter id="filter">
-            <feTurbulence type="fractalNoise" baseFrequency=".01" numOctaves="6" />
-            <feDisplacementMap in="SourceGraphic" scale="100" />
-        </filter>
-    </svg>
     <div class="input_all">
         <div class="input _5">
             <span>
@@ -82,7 +78,7 @@
             <span>
                 <p>起始日期:</p><br />
                 <form>
-                    <input id="table_begin_day" type="date" value="2018-01-03" />
+                    <input id="table_begin_day" type="date" onchange="clearfun()"  />
                 </form>
             </span>
         </div>
@@ -90,7 +86,7 @@
             <span>
                 <p>截止日期:</p><br />
                 <form>
-                    <input id="table_over_day" type="date" value="2019-05-09" />
+                    <input id="table_over_day" type="date" onchange="clearfun()"  />
                 </form>
             </span>
         </div>
@@ -100,13 +96,14 @@
                     <select name="table_index_type" id="table_index_type">
                     </select>
                 </form><br />
-                <button id="table_run" type="button" class="table_run" onclick="table_show()">添加</button>
+                <button id="table_run" type="button" class="table_run" onclick="addTable()">添加</button>
             </span>
-        </div>
-            
-            
-         
+        </div> 
     </div>
+
+    <div id="hot" class="hot"></div>
+
+
     <table id="table_view"  border="1" cellspacing="0" >
     <thead>
         <tr>
@@ -115,11 +112,15 @@
     <tbody id="tbMain"></tbody>
     </table>
 
+
+
+    <br><br><br><br>
     <div class="json_show">
         <p>下面是所有的json文件内容</p>
         <br />
         <pre id="json_show"></pre>
     </div>
+
 
 </body>
 </html>

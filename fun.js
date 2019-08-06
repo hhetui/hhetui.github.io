@@ -44,11 +44,19 @@ window.onload = function () {
                 + date_now.substr(6, 2));
             $$("table_begin_day").value = date_begin;
             $$("table_over_day").value = date_over;
+            begin_old=date_begin;
+            over_old=date_over;
+            set_Object_setting();
+            //alert(over_old==date_over)
+            //alert(beginold);
+            //alert(date_begin);
+            //alert(beginold==$$("table_begin_day").value);
             //初始化价格曲线
             initialize();
         },
 
     });
+ 
 }
 
 //日期变化则初始化价格曲线
@@ -244,35 +252,114 @@ var getRandomColor = function () {
         })('');
 }
 
-var dataObject = [
+//定义全局变量
 
-];
-var hotSettings = {
-    data: dataObject,
-    columns: [
 
-    ],
-    stretchH: 'all',
-    width: '80%',
-    autoWrapRow: true,
-    height: 487,
-    maxRows: 22,
-    manualRowResize: true,
-    manualColumnResize: true,
-    rowHeaders: true,
-    colHeaders: [
-
-    ],
-    manualRowMove: true,
-    manualColumnMove: true,
-    contextMenu: true,
-    dropdownMenu: true,
-    filters: true
-};
+var indexList=[];
 function addTable(){
+    //alert(dataObject);
+    //alert(over_old==date_over);
     var index_type = $$("table_index_type").value;
     var begin_day = $$("table_begin_day").value;
     var over_day = $$("table_over_day").value;
+    //alert(over_old==date_over);
+    //alert(begin_old==date_begin);
+    //alert(begin_old);
+    //alert(begin_day);
+    //alert(begin_old==begin_day);
+
+    if(begin_old==begin_day & over_old==over_day){
+        makeTable(index_type,begin_day,over_day);
+        indexList.push(index_type);
+        //alert("添加成功");
+        //alert(indexList);
+    }
+    else{
+        alert("日期变更，请保存日期！")
+    }
+    
+}
+
+function set_Object_setting(){
+    dataObject = [
+
+    ];
+    hotSettings = {
+        data: dataObject,
+        columns: [
+    
+        ],
+        stretchH: 'all',
+        width: '80%',
+        autoWrapRow: true,
+        height: 487,
+        maxRows: 22,
+        manualRowResize: true,
+        manualColumnResize: true,
+        rowHeaders: true,
+        colHeaders: [
+    
+        ],
+        manualRowMove: true,
+        manualColumnMove: true,
+        contextMenu: true,
+        dropdownMenu: true,
+        filters: true
+    };
+    dataObject_count = [
+
+    ];
+    hotSettings_count = {
+        data: dataObject_count,
+        columns: [
+    
+        ],
+        stretchH: 'all',
+        width: '40%',
+        autoWrapRow: true,
+        height: 487,
+        maxRows: 22,
+        manualRowResize: true,
+        manualColumnResize: true,
+        rowHeaders: true,
+        colHeaders: [
+    
+        ],
+        manualRowMove: true,
+        manualColumnMove: true,
+        contextMenu: true,
+        dropdownMenu: true,
+        filters: true
+    };
+    
+}
+function changeTable(){
+    var begin_day = $$("table_begin_day").value;
+    var over_day = $$("table_over_day").value;
+    set_Object_setting();
+    begin_old=begin_day;
+    over_old=over_day;
+    
+    for(i=0;i<indexList.length;i++){
+        var index_type = indexList[i];
+        makeTable(index_type,begin_day,over_day);
+    }
+    //alert("保存成功");
+}
+
+function clearTable(){
+    var begin_day = $$("table_begin_day").value;
+    var over_day = $$("table_over_day").value;
+    set_Object_setting();
+    indexList=[];
+    begin_old=begin_day;
+    over_old=over_day;
+    addTable();
+    alert("清空成功");
+}
+
+function makeTable(index_type,begin_day,over_day){
+    
     $.ajax({
         type: "GET",
         url: fileName,
@@ -280,7 +367,9 @@ function addTable(){
         success: function (data_ori) {
             var dataArrays1 = data_ori;
             var temp_table = {};
+            var temp_count_table={};
             temp_table["1"] = index_type;
+            temp_count_table["1"] = index_type;
             var data_length = Object.keys(dataArrays1).length;
             for (i = 0; i < data_length; i++) {
                 var date_now = dataArrays1[i]["time"];
@@ -303,8 +392,82 @@ function addTable(){
             for (i = 0; i < Object.keys(temp_table).length; i++) {
                 data_key.push(Object.keys(temp_table)[i]);
             };
+            //添加统计表格
+            var countList=[0,0,0];
+            for (i = 0; i <data_value.length; i++) {
+                if(data_value[i]==0){
+                    countList[0]+=1;
+                }
+                else if(data_value[i]==1){
+                    countList[1]+=1;
+                }
+                else if(data_value[i]==2){
+                    countList[2]+=1;
+                }
+            };
+            //alert(countList);
+            for(i=0;i<3;i++){
+                temp_count_table["100"+i]=countList[i];
+            };
+            dataObject_count.push(temp_count_table);
+            var countElement = document.querySelector('#index_count');
+            var countElementContainer = countElement.parentNode;
+            var columnsNew = [];
+            columnsNew.push({
+                data: "1",
+                type: "text",
+            });
+            var colHeadersNew = [];
+            colHeadersNew.push("种类");
+            for (i = 0; i < 3; i++) {
+                columnsNew.push({
+                    data: "100"+i,
+                    type: "text",
+                });
+                colHeadersNew.push(i);
+            };
             
+            hotSettings_count.columns = columnsNew;
+            hotSettings_count.colHeaders = colHeadersNew;
+            var hot_count = new Handsontable(countElement, hotSettings_count);
+
+
+
+
+
+
+            //添加展示表格
             dataObject.push(temp_table);
+            //alert(Object.keys(dataObject).length);
+            var hotElement = document.querySelector('#hot');
+            var hotElementContainer = hotElement.parentNode;
+            var columnsNew = [];
+            var colHeadersNew = [];
+            columnsNew.push({
+                data: "1",
+                type: "text",
+            });
+            colHeadersNew.push("种类")
+            //alert(data_key[1]);
+            for (i = 1; i < data_key.length; i++) {
+                columnsNew.push({
+                    data: ""+data_key[i],
+                    type: "text",
+                });
+                if(i>0){
+                    colHeadersNew.push(data_key[i]);
+                }
+            };
+            hotSettings.columns = columnsNew;
+            hotSettings.colHeaders = colHeadersNew;
+            var hot = new Handsontable(hotElement, hotSettings);
+        },
+    },
+    );
+
+}
+/* 
+dataObject.push(temp_table);
             //alert(Object.keys(dataObject).length);
             var hotElement = document.querySelector('#hot');
             var hotElementContainer = hotElement.parentNode;
@@ -328,12 +491,4 @@ function addTable(){
             hotSettings.columns = columnsNew;
             hotSettings.colHeaders = colHeadersNew;
             var hot = new Handsontable(hotElement, hotSettings);
-        },
-    },
-    );
-
-}
-
-function clearfun(){
-
-}
+*/

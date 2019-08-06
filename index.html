@@ -79,7 +79,7 @@
             <span>
                 <p>起始日期:</p><br />
                 <form>
-                    <input id="table_begin_day" type="date" onchange="clearfun()"  />
+                    <input id="table_begin_day" type="date" />
                 </form>
             </span>
         </div>
@@ -87,31 +87,39 @@
             <span>
                 <p>截止日期:</p><br />
                 <form>
-                    <input id="table_over_day" type="date" onchange="clearfun()"  />
+                    <input id="table_over_day" type="date"/>
                 </form>
             </span>
         </div>
+
+        <div class="input _10">
+            <span>
+                
+                <button id="date_change_run" type="button" class="date_change_run" onclick="changeTable()">保存日期</button>
+            </span>
+        </div> 
         <div class="input _7">
             <span>
                 <form>
                     <select name="table_index_type" id="table_index_type">
                     </select>
                 </form><br />
+                
                 <button id="table_run" type="button" class="table_run" onclick="addTable()">添加</button>
+                <button id="clear_table" type="button" class="clear_table" onclick="clearTable()">清空表格后添加</button>
             </span>
-        </div> 
+        </div>
     </div>
 
+
+    <div id="tableall" class="tableall">
+    <div id="index_count" class="index_count"></div>
     <div id="hot" class="hot"></div>
+    </div>
+    
 
 
-    <table id="table_view"  border="1" cellspacing="0" >
-    <thead>
-        <tr>
-        </tr>
-    </thead>
-    <tbody id="tbMain"></tbody>
-    </table>
+    
 
 
 

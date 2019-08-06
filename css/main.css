@@ -86,6 +86,12 @@ body {
 .input._9 {
   background: #0b8ab1;
 }
+.input._10 {
+  background: #86b142;
+}
+.input._11 {
+  background: #51e2e2;
+}
 .input select{
   text-align:left;
   width:100%;
@@ -139,13 +145,10 @@ a:hover {
   margin: 0 auto
 }
 
-.table_show{
-  justify-content: center;
-  padding: 20px;
-  text-align: center;
-  margin: 0 auto;
-}
 
+.index_count{
+  float: left;
+}
 .hot {
   background-color: #fff;
   position: relative;

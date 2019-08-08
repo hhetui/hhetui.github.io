@@ -521,7 +521,7 @@ function frequency(){
                 }
 
             };
-            alert(gapList);
+            //alert(gapList);
             var girth =gapList;
 
             var bins = ecStat.histogram(girth);

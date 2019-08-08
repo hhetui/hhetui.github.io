@@ -10,11 +10,13 @@
     <title>结果展示网址</title>
     <link rel="stylesheet" type="text/css" href="css/main.css" />
     <base target="_blank" />
-    <script src="jquery-3.1.1.min.js"></script>
-    <script src="fun.js"></script>
-    <script src="Chart.js"></script>
-    <script src="echarts.min.js"></script>
-    <script src="handsontable.full.min.js"></script>
+    <script src="./jsfile/ecStat.js"></script>
+    <script src="./jsfile/jquery-3.1.1.min.js"></script>
+    <script src="./jsfile/fun.js"></script>
+    <script src="./jsfile/Chart.js"></script>
+    <script src="./jsfile/echarts.min.js"></script>
+    <script src="./jsfile/handsontable.full.min.js"></script>
+    
     <link href="handsontable.full.min.css" rel="stylesheet" media="screen">
 
 
@@ -104,17 +106,21 @@
                     <select name="table_index_type" id="table_index_type">
                     </select>
                 </form><br />
-                
+                <button id="plot_frequency" type="button" class="plot_frequency" onclick="frequency()">信号频率统计</button>
                 <button id="table_run" type="button" class="table_run" onclick="addTable()">添加</button>
                 <button id="clear_table" type="button" class="clear_table" onclick="clearTable()">清空表格后添加</button>
             </span>
         </div>
     </div>
-
-
-    <div id="tableall" class="tableall">
+    <div id= "index_frequency" class="index_frequency"></div>
     <div id="index_count" class="index_count"></div>
+
+    <br>
+    
     <div id="hot" class="hot"></div>
+    <div id="tableall" class="tableall">
+    
+    
     </div>
     
 

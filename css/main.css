@@ -146,8 +146,21 @@ a:hover {
 }
 
 
-.index_count{
-  float: left;
+.index_frequency{
+  background-color: #fff;
+  position: relative;
+  width: 80%;
+  height: 80%;
+  padding: 20px;
+  text-align: center;
+  margin: 0 auto
+}
+.index_count {
+  background-color: #fff;
+  position: relative;
+  width: 80%;
+  text-align: center;
+  margin: 0 auto;
 }
 .hot {
   background-color: #fff;

@@ -131,7 +131,8 @@ function plotPrice(date, price) {
         },
         yAxis: {
             type: 'value',
-            boundaryGap: [0, '100%']
+            //boundaryGap: [0, '100%'],
+            scale:true,
         },
         dataZoom: [{
             type: 'inside',
@@ -190,7 +191,7 @@ function show() {
         success: function (data_ori) {
             var dataArrays1 = data_ori;
             console.log(dataArrays1)
-            var temp_picture = {};
+            
             var data_length = Object.keys(dataArrays1).length
             
             intMax=0;
@@ -201,6 +202,7 @@ function show() {
             };
 
             for(indexNumber=1;indexNumber<=intMax;indexNumber++){
+                var temp_picture = {};
                 for (i = 0; i < data_length; i++) {
                     var date_now = dataArrays1[i]["time"];
                     if (dataArrays1[i][index_type] == indexNumber) {
@@ -516,6 +518,9 @@ function frequency(){
             for(i=0;i<data_value.length;i++){
                 gap_day=gap_day+1;
                 if(data_value[i]!=0){
+                    //if(gap_day>100){
+                    //    gap_day=99;
+                    //};
                     gapList.push(gap_day);
                     gap_day=0;
                 }

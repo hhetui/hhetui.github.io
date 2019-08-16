@@ -1,10 +1,12 @@
-var fileName = "000001.XSHE.json";
+var fileName = "000001.XSHE.json";//指标
+var fileName_2="000001.XSHE+long_short_cross_together.json";//策略
 function $$(element) {
     return document.getElementById(element);
 }
 window.onresize=function(){
     echarts.init($$('bar_chart')).resize();
     echarts.init($$("index_frequency")).resize();
+    echarts.init($$("bar_chart_2")).resize();
 }
 window.onload = function () {
     var objSelectet_index_type = $$("index_type");
@@ -48,20 +50,43 @@ window.onload = function () {
             begin_old=date_begin;
             over_old=date_over;
             set_Object_setting();
-            //alert(over_old==date_over)
-            //alert(beginold);
-            //alert(date_begin);
-            //alert(beginold==$$("table_begin_day").value);
             //初始化价格曲线
             initialize();
-            //frequency()
+            //初始化策略价格曲线
+            celuefileopen();
         },
 
     });
  
 }
+//打开策略文件
+function celuefileopen(){
+    var celue_type = $$("celue_type");
+    $.ajax({
+        type: "GET",
+        url: fileName_2,
+        dataType: "json",
+        success: function (data_ori) {
+            var dataArrays1 = data_ori;
+            //设置策略种类复选框选项
+            var data_key = new Array;
+            for (i = 0; i < Object.keys(dataArrays1[0]).length; i++) {
+                data_key.push(Object.keys(dataArrays1[0])[i]);
+            };
+            for (i = 1; i < data_key.length - 1; i++) {
+                var objOption = document.createElement("OPTION");
+                objOption.text = data_key[i];
+                objOption.value = data_key[i];
+                celue_type.options.add(objOption);
+            };
+            initialize_2();
+        },
 
-//日期变化则初始化价格曲线
+    });
+}
+
+
+//日期变化则初始化指标价格曲线
 function initialize(){
     //clearCanvas();
     $.ajax({
@@ -94,7 +119,42 @@ function initialize(){
         },
     });
 }
-//价格绘制函数
+
+//初始化策略价格曲线
+function initialize_2(){
+    //clearCanvas();
+    $.ajax({
+        type: "GET",
+        url: fileName_2,
+        dataType: "json",
+        success: function (data_ori) {
+            var dataArrays1 = data_ori;
+            var data_length = Object.keys(dataArrays1).length
+            //获取起始日期
+            var temp_picture = {};
+            for (i = 0; i < data_length; i++) {
+                var date_now = dataArrays1[i]["time"];
+                if (1) {
+                    temp_picture[date_now] = dataArrays1[i]["close"];
+                };
+            };
+            //坐标轴（日期）和指标值
+            var data_key = new Array;
+            var data_value = new Array;
+
+            for (var key in temp_picture) {
+                data_value.push(temp_picture[key])
+            };
+            for (i = 0; i < Object.keys(temp_picture).length; i++) {
+                data_key.push(Object.keys(temp_picture)[i]);
+            };
+            //绘价格曲线
+            plotPrice_2(data_key,data_value);
+        },
+    });
+}
+
+//指标价格绘制函数
 function plotPrice(date, price) {
     var data=price;
     
@@ -177,11 +237,90 @@ function plotPrice(date, price) {
     myChart.setOption(option);
     
 }
-function plotPrice_2() {
-    var myChart = echarts.init($$('bar_chart'));
-    myChart.setOption(option);
-}
 
+//策略价格绘制函数
+function plotPrice_2(date, price) {
+    var data=price;
+    
+    var myChart = echarts.init($$('bar_chart_2'));
+    option_2 = {
+        legend:{
+            y:'20',
+            x:'left',
+            data: ['收盘价']
+        },
+        tooltip: {
+            trigger: 'axis',
+            position: function (pt) {
+                return [pt[0], '10%'];
+            }
+        },
+        title: {
+            left: 'center',
+            text: '价格-策略图',
+        },
+        toolbox: {
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: date
+        },
+        yAxis: {
+            type: 'value',
+            //boundaryGap: [0, '100%'],
+            scale:true,
+        },
+        dataZoom: [{
+            type: 'inside',
+            start: 0,
+            end: 100,
+        }, {
+            start: 0,
+            end: 10,
+            handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+            handleSize: '80%',
+            handleStyle: {
+                color: '#fff',
+                shadowBlur: 3,
+                shadowColor: 'rgba(0, 0, 0, 0.6)',
+                shadowOffsetX: 2,
+                shadowOffsetY: 2
+            }
+        }],
+        series: [
+            {
+                name: '收盘价',
+                type: 'line',
+                smooth: false,
+                symbol: 'none',
+                sampling: 'average',
+                itemStyle: {
+                    color: '#c0c0c0'
+                },
+                areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: 'rgb(255,255,255)'
+                    }, {
+                        offset: 1,
+                        color: 'rgb(255,255,255)'
+                    }])
+                },
+                data: data
+            }
+        ]
+    };
+    myChart.setOption(option_2);
+    
+}
 function show() {
     var index_type = $$("index_type").value;
     $.ajax({
@@ -244,7 +383,75 @@ function plotIndex(date,data,index){
             color: getRandomColor(),
         },
     });
-    plotPrice_2();
+    plot_again();
+}
+
+function plot_again() {
+    var myChart = echarts.init($$('bar_chart'));
+    myChart.setOption(option);
+}
+
+function celue_show(){
+    var celue_type = $$("celue_type").value;
+    $.ajax({
+        type: "GET",
+        url: fileName_2,
+        dataType: "json",
+        success: function (data_ori) {
+            var dataArrays1 = data_ori;
+            console.log(dataArrays1)
+            
+            var data_length = Object.keys(dataArrays1).length
+            
+            
+            typeList=['short','long'];
+
+            for(var indexNumber=0;indexNumber<typeList.length;indexNumber++){
+                var temp_picture = {};
+                var type=typeList[indexNumber];
+                for (i = 0; i < data_length; i++) {
+                    var date_now = dataArrays1[i]["time"];
+                    if (dataArrays1[i][celue_type] == type) {
+                        temp_picture[date_now] = dataArrays1[i]["close"];
+                    };
+                };
+
+                data_key = new Array;
+                data_value = new Array;
+                for (var key in temp_picture) {
+                    data_value.push(temp_picture[key])
+                };
+                for (i = 0; i < Object.keys(temp_picture).length; i++) {
+                    data_key.push(Object.keys(temp_picture)[i]);
+                };
+                var index_type_now = type;
+                plotIndex_2(data_key, data_value, index_type_now);
+            }
+
+        },
+    });
+}
+function plotIndex_2(date,data,index){
+    var newList = [];
+    for (i = 0; i < data.length; i++) {
+        newList.push([date[i], data[i]]);
+    }
+    option_2.legend.data.push(index);
+    option_2.series.push({
+        name: index,
+        type: 'scatter',
+        data: newList,
+        symbolSize: 10,
+        itemStyle: {
+            color: getRandomColor(),
+        },
+    });
+    plot_again_2();
+}
+
+function plot_again_2() {
+    var myChart = echarts.init($$('bar_chart_2'));
+    myChart.setOption(option_2);
 }
 
 

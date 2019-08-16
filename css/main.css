@@ -64,33 +64,37 @@ body {
   background: #2980b9;
 }
 
-.input._4 {
+.input._2 {
   background: #7bcc1f;
 }
-.input._5 {
+.input._3 {
   background: #e05735;
 }
-.input._6 {
+.input._4 {
   background: #8219d8;
 }
-.input._7 {
+.input._5 {
   background: #e63414;
+}
+.input._6 {
+  background: #16a085;
+  
+}
+.input._7 {
+  background: #0b8ab1;
+}
+.input._8 {
+  background: #86b142;
   display: flex;
   padding: 20px;
   text-align: center;
   margin: 0 auto
 }
-.input._8 {
-  background: #16a085;
-}
 .input._9 {
-  background: #0b8ab1;
+  background: #51e2e2;
 }
 .input._10 {
-  background: #86b142;
-}
-.input._11 {
-  background: #51e2e2;
+  background: #b89935b9;
 }
 .input select{
   text-align:left;
@@ -108,7 +112,7 @@ body {
 }
 .run_button{
   height: 30px;
-  width: 50px;
+  width: 60px;
   -webkit-transition-duration: 0.4s;
   text-align: center;
   border-radius: 10px;
@@ -144,7 +148,15 @@ a:hover {
   text-align: center;
   margin: 0 auto
 }
-
+.bar_chart_2{
+  background-color: #fff;
+  position: relative;
+  width: 80%;
+  height: 80%;
+  padding: 20px;
+  text-align: center;
+  margin: 0 auto
+}
 
 .index_frequency{
   background-color: #fff;

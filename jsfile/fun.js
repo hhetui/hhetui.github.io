@@ -1,5 +1,5 @@
 var fileName = "000001.XSHE.json";//指标
-var fileName_2="000001.XSHE+long_short_cross_together.json";//策略
+var fileName_2="price_track_mean_cross.json";//策略
 function $$(element) {
     return document.getElementById(element);
 }
@@ -59,32 +59,77 @@ window.onload = function () {
     });
  
 }
-//打开策略文件
+//打开策略文件添加股票种类选项框
 function celuefileopen(){
-    var celue_type = $$("celue_type");
+    var code_name_2=$$("code_name_2");
     $.ajax({
         type: "GET",
         url: fileName_2,
         dataType: "json",
         success: function (data_ori) {
+            //添加策略股票种类
             var dataArrays1 = data_ori;
-            //设置策略种类复选框选项
             var data_key = new Array;
-            for (i = 0; i < Object.keys(dataArrays1[0]).length; i++) {
-                data_key.push(Object.keys(dataArrays1[0])[i]);
+            //alert(Object.keys(dataArrays1)[0]);
+            for (i = 0; i < Object.keys(dataArrays1).length; i++) {
+                data_key.push(Object.keys(dataArrays1)[i]);
             };
-            for (i = 1; i < data_key.length - 1; i++) {
+            //alert(data_key);
+            for (i = 0; i < data_key.length; i++) {
                 var objOption = document.createElement("OPTION");
                 objOption.text = data_key[i];
                 objOption.value = data_key[i];
-                celue_type.options.add(objOption);
+                code_name_2.options.add(objOption);
             };
+            celue_type_set();
             initialize_2();
         },
 
     });
 }
 
+function celue_type_set(){
+    var celue_type = $$("celue_type");
+    
+    $.ajax({
+        type: "GET",
+        url: fileName_2,
+        dataType: "json",
+        success: function (data_ori) {
+            var dataArrays1 = data_ori[$$("code_name_2").value];
+            //设置策略种类复选框选项
+            var data_key = new Array;
+            for (i = 0; i < Object.keys(dataArrays1[0]).length; i++) {
+                data_key.push(Object.keys(dataArrays1[0])[i]);
+            };
+            DeleteOptions();
+            for (i = 1; i < data_key.length ; i++) {
+                
+                var objOption = document.createElement("OPTION");
+
+                objOption.text = data_key[i];
+                objOption.value = data_key[i];
+                celue_type.options.add(objOption);
+            };
+        },
+
+    });
+}
+function DeleteOptions()  
+    {  
+        var obj = $$("celue_type");  
+        var selectOptions = obj.options;  
+        var optionLength = selectOptions.length;  
+        for(var i=0;i <optionLength;i++)  
+        {  
+            obj.removeChild(selectOptions[0]);  
+        }  
+    } 
+function code_name_change(){
+    //alert("变动");
+    celue_type_set();
+    initialize_2();
+}
 
 //日期变化则初始化指标价格曲线
 function initialize(){
@@ -128,7 +173,7 @@ function initialize_2(){
         url: fileName_2,
         dataType: "json",
         success: function (data_ori) {
-            var dataArrays1 = data_ori;
+            var dataArrays1 = data_ori[$$("code_name_2").value];
             var data_length = Object.keys(dataArrays1).length
             //获取起始日期
             var temp_picture = {};
@@ -241,8 +286,8 @@ function plotPrice(date, price) {
 //策略价格绘制函数
 function plotPrice_2(date, price) {
     var data=price;
-    
     var myChart = echarts.init($$('bar_chart_2'));
+    myChart.clear();
     option_2 = {
         legend:{
             y:'20',
@@ -318,7 +363,9 @@ function plotPrice_2(date, price) {
             }
         ]
     };
+    //alert(option_2.series.length);
     myChart.setOption(option_2);
+    
     
 }
 function show() {
@@ -398,7 +445,7 @@ function celue_show(){
         url: fileName_2,
         dataType: "json",
         success: function (data_ori) {
-            var dataArrays1 = data_ori;
+            var dataArrays1 = data_ori[$$("code_name_2").value];
             console.log(dataArrays1)
             
             var data_length = Object.keys(dataArrays1).length
@@ -426,10 +473,12 @@ function celue_show(){
                 };
                 var index_type_now = type;
                 plotIndex_2(data_key, data_value, index_type_now);
-            }
+
+            };
 
         },
     });
+    
 }
 function plotIndex_2(date,data,index){
     var newList = [];
@@ -446,6 +495,7 @@ function plotIndex_2(date,data,index){
             color: getRandomColor(),
         },
     });
+    //alert(option_2.series.length);
     plot_again_2();
 }
 

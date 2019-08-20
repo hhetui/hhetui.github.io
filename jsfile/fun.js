@@ -54,6 +54,7 @@ window.onload = function () {
             initialize();
             //初始化策略价格曲线
             celuefileopen();
+            pgshow();
         },
 
     });
@@ -503,6 +504,22 @@ function plot_again_2() {
     var myChart = echarts.init($$('bar_chart_2'));
     myChart.setOption(option_2);
 }
+
+function pgshow(){
+    $.ajax({
+        type: "GET",
+        url: "price_track_mean_cross_eval.json",
+        dataType: "json",
+        success: function (data_ori) {
+            dataArrays1=data_ori;
+            document.getElementById("json_show").innerHTML=
+            JSON.stringify(dataArrays1,null,"\t");
+
+        },
+    });
+}
+
+
 
 
 var getRandomColor = function () {

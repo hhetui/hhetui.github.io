@@ -131,6 +131,7 @@ function DeleteOptions()
         }  
     } 
 function code_name_change(){
+    eval_table();
     //alert("变动");
     celue_type_set();
     initialize_2();

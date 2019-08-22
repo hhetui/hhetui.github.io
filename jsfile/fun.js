@@ -1,5 +1,6 @@
 var fileName = "000001.XSHE.json";//指标
 var fileName_2="price_track_mean_cross.json";//策略
+var fileName_eval="price_track_mean_cross_eval.json";
 function $$(element) {
     return document.getElementById(element);
 }
@@ -58,6 +59,7 @@ window.onload = function () {
         },
 
     });
+    
  
 }
 //打开策略文件添加股票种类选项框
@@ -83,6 +85,8 @@ function celuefileopen(){
                 code_name_2.options.add(objOption);
             };
             celue_type_set();
+            
+            
             initialize_2();
         },
 
@@ -196,6 +200,8 @@ function initialize_2(){
             };
             //绘价格曲线
             plotPrice_2(data_key,data_value);
+            //初始化eval表格 此时刚可以读取到初始化的code_name_2和celue_type
+            eval_table();
         },
     });
 }
@@ -452,7 +458,7 @@ function celue_show(){
             var data_length = Object.keys(dataArrays1).length
             
             
-            typeList=['short','long'];
+            var typeList=['short','long'];
 
             for(var indexNumber=0;indexNumber<typeList.length;indexNumber++){
                 var temp_picture = {};
@@ -464,15 +470,15 @@ function celue_show(){
                     };
                 };
 
-                data_key = new Array;
-                data_value = new Array;
+                var data_key = new Array;
+                var data_value = new Array;
                 for (var key in temp_picture) {
                     data_value.push(temp_picture[key])
                 };
                 for (i = 0; i < Object.keys(temp_picture).length; i++) {
                     data_key.push(Object.keys(temp_picture)[i]);
                 };
-                var index_type_now = type;
+                var index_type_now = celue_type+"_"+type;
                 plotIndex_2(data_key, data_value, index_type_now);
 
             };
@@ -508,16 +514,98 @@ function plot_again_2() {
 function pgshow(){
     $.ajax({
         type: "GET",
-        url: "price_track_mean_cross_eval.json",
+        url: fileName_eval,
         dataType: "json",
         success: function (data_ori) {
             dataArrays1=data_ori;
-            document.getElementById("json_show").innerHTML=
-            JSON.stringify(dataArrays1,null,"\t");
+            //document.getElementById("json_show").innerHTML=
+            //JSON.stringify(dataArrays1,null,"\t");
 
         },
     });
 }
+
+function eval_table(){
+    var celue_type=$$("celue_type").value;
+    var code_name_2=$$("code_name_2").value;
+    $$("eval_intro").innerHTML="股票："+code_name_2+" 策略："+celue_type+"的eval表格";
+    var dataObject_eval = [
+
+    ];
+    var evalSettings = {
+        data: dataObject_eval,
+        columns: [
+    
+        ],
+        stretchH: 'all',
+        width: '80%',
+        autoWrapRow: true,
+        height: 487,
+        maxRows: 22,
+        manualRowResize: true,
+        manualColumnResize: true,
+        rowHeaders: true,
+        colHeaders: [
+    
+        ],
+        manualRowMove: true,
+        manualColumnMove: true,
+        contextMenu: true,
+        dropdownMenu: true,
+        filters: true
+    };
+    $.ajax({
+        type: "GET",
+        url: fileName_eval,
+        dataType: "json",
+        success: function (data_ori) {
+            var dataArrays1 = data_ori;
+            
+            var code_celue=dataArrays1[code_name_2][celue_type];
+            //alert(code_name_2)
+            //alert(celue_type)
+            //alert(code_celue["long"][Object.keys(code_celue["long"])[1]]);
+            
+            for(i=0;i<Object.keys(code_celue["long"]).length;i++){
+                var temp_count_table={};
+                temp_count_table["1"] = Object.keys(code_celue["long"])[i];
+                //var data_length = Object.keys(dataArrays1).length;
+                //alert(countList);
+                slist=["short","long"];
+                for(j=0;j<2;j++){
+                    temp_count_table["100"+j]=code_celue[slist[j]][temp_count_table["1"]];
+                };
+                dataObject_eval.push(temp_count_table);
+            };
+
+            
+            var countElement = document.querySelector('#celue_eval');
+            var countElementContainer = countElement.parentNode;
+            var columnsNew = [];
+            columnsNew.push({
+                data: "1",
+                type: "text",
+            });
+            var colHeadersNew = ["种类","short","long"];
+            for (i = 0; i < 2; i++) {
+                columnsNew.push({
+                    data: "100"+i,
+                    type: "text",
+                });
+            };
+            evalSettings.columns = columnsNew;
+            evalSettings.colHeaders = colHeadersNew;
+            var eval_Table = new Handsontable(countElement, evalSettings);
+        },
+    },
+    );
+}
+
+
+
+
+
+
 
 
 

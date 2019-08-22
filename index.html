@@ -91,7 +91,7 @@
                 <span>
                     <p>策略:</p><br />
                     <form >
-                        <select name="celue_type" id="celue_type">
+                        <select name="celue_type" id="celue_type" onchange="eval_table()">
                              
                         </select>
                     </form>
@@ -111,8 +111,9 @@
     </div>
 
     <div class="pinggu">
-        <p>下面是所有的json文件内容</p>
+        <p id="eval_intro"></p>
         <pre id="json_show"></pre>
+        <div id="celue_eval" class="celue_eval"></div>
     </div>
 <!-- 添加展示表格-->
     <div class="input_all">
@@ -171,11 +172,7 @@
 
 
     <br><br><br><br>
-    <div class="json_show">
-        
-        <br />
-        //<pre id="json_show"></pre>
-    </div>
+    
 
 
 </body>

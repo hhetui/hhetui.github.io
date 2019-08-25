@@ -198,3 +198,10 @@ a:hover {
   text-align: center;
   margin: 0 auto;
 }
+.picture {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  margin: 0 auto
+}

@@ -9,6 +9,8 @@
     <meta http-equiv="refresh" content="10000">
     <title>结果展示网址</title>
     <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link href="css/handsontable.full.min.css" rel="stylesheet" type="text/css" media="screen">
+
     <base target="_blank" />
     <script src="./jsfile/ecStat.js"></script>
     <script src="./jsfile/jquery-3.1.1.min.js"></script>
@@ -17,8 +19,7 @@
     <script src="./jsfile/echarts.min.js"></script>
     <script src="./jsfile/handsontable.full.min.js"></script>
     
-    <link href="handsontable.full.min.css" rel="stylesheet" media="screen">
-
+    
 
     
 </head>
@@ -42,10 +43,7 @@
             <span>
                 <p>Code:</p><br />
                 <form>
-                    <select name="code_name" id="code_name">
-                        <option value="000001"><b>000001</b></option>
-                        <option value="000002"><b>000002</b></option>
-                        <option value="000003"><b>000003</b></option>
+                    <select name="code_name" id="code_name" onchange="initialize_index()">
                     </select>
                 </form>
             </span>
@@ -97,6 +95,16 @@
                     </form>
                 </span>
         </div>
+        <div class="input _12">
+            <span>
+                <p>长度:</p><br />
+                <form >
+                    <select name="day_length" id="day_length" onchange="eval_table()">
+                         
+                    </select>
+                </form>
+            </span>
+    </div>
         <div class="input _10">
             <span>
                 <button id="run" type="button" class="run_button" onclick="celue_show()">添加策略</button>
@@ -119,15 +127,16 @@
     <div class="input_all">
         <div class="input _5" >
             <span>
-                <p>起始日期:</p><br />
-                <form>
-                    <input id="table_begin_day" type="date" />
-                </form>
+                <select name="code_name_table" id="code_name_table" onchange="table_index_set()">
+                </select> 
+                
             </span>
         </div>
         <div class="input _6">
             <span>
-                <p>截止日期:</p><br />
+                <form>
+                    <input id="table_begin_day" type="date" />
+                </form>
                 <form>
                     <input id="table_over_day" type="date"/>
                 </form>
@@ -137,7 +146,7 @@
         <div class="input _7">
             <span>
                 
-                <button id="date_change_run" type="button" class="date_change_run" onclick="changeTable()">保存日期</button>
+                <button id="date_change_run" type="button" class="date_change_run" onclick="savedate()">保存日期</button>
             </span>
         </div> 
         <div class="input _8">

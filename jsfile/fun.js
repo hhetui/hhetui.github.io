@@ -317,6 +317,7 @@ function celue_type_set(){
                 objOption.value = Object.keys(dataArrays1)[i];
                 celue_type.options.add(objOption);
             };
+            DeleteOptions(day_length);
             for(i=0;i<Object.keys(dataArrays1[celue_type.value]).length;i++){
                 var objOption = document.createElement("OPTION");
                 objOption.text = Object.keys(dataArrays1[celue_type.value])[i];
